@@ -1,11 +1,11 @@
 For all the machines I do, I always start off with an nmap scan.  First a quick port scan and then a detailed port scan.
-I start off by using nmap -p- -T4 10.10.10.165
+I start off by using `nmap -p- -T4 10.10.10.165`
 This shows us that we have two ports open, 22 and 80.  On hack the box we don't need to brute force SSH, because there's other ways in.
 
 Let's go ahead and get some version information about the services and the operating system.
-nmap -p22,80 -A -O -sV -T4 10.10.10.165 -oA Traverxec
+`nmap -p22,80 -A -O -sV -T4 10.10.10.165 -oA Traverxec`
 Here we are specifcally scanning the ports that we know are open with -p22,80, we use -A for OS detection, version detection, script scanning and traceroute, -sV specifcally for identifying service versions, -T4 for speed (-T5 is fastest, but tends to knock over hosts), -O is for Operating System detection again, and finally -oA Filename will put the output out in 3 different formats
-
+```
 Not shown: 65533 filtered ports
 PORT   STATE SERVICE VERSION
 22/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u1 (protocol 2.0)
@@ -26,9 +26,9 @@ TRACEROUTE (using port 22/tcp)
 HOP RTT      ADDRESS
 1   52.86 ms 10.10.14.1
 2   52.95 ms 10.10.10.165
-
+```
 Great we get the version of the http web server is 1.9.6.  Now we can visit the page and explore.  I always run dirbuster against web sites to look for the various directories.
-gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://10.10.10.165
+`gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://10.10.10.165`
 
 After visiting http://10.10.10.165/admin we trigger an error and once again see that the version is nostromo 1.9.6.  Searching google we find some exploit code here https://www.exploit-dm.com/exploits/43837.
 This says it is remote code execution, perfect exactly what we need.
