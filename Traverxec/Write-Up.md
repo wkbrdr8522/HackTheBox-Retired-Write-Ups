@@ -43,7 +43,7 @@ To use the exploit code just save the code from exploit db into a file called cv
 The problem is a lot of them have 500 interal server error.  I made a list of all the files and then used foxy proxy and burp to capture the request of visiting http://10.10.10.165/.%0D./.%0D./.%0D./.%0D./bin/apt-cache
 Any binary path would work here.
 Once you open burp, go to the proxy tab and turn intercept on.  Also your foxy proxy needs to be configured to send traffic through burp which is listening in my case on 8080.
-![Burp Intercepted Request](https://raw.githubusercontent.com/wkbrdr8522/HackTheBox-Writeups/master/Traverxec/Burp%20Intercepted%20Request.jpg?token=ALWTY6JDEVKFPW4MPOUNX2S6UB3SC)
+![Burp Intercepted Request](https://raw.githubusercontent.com/wkbrdr8522/HackTheBox-Retired-Write-Ups/master/Traverxec/Burp%20Intercepted%20Request.jpg)
 
 
 Once we get the request the first line will look like this:  GET /.0%D./.0%D./.0%D./.0%D./bin/apt-cache.  Right click the request and send to Intruder.
