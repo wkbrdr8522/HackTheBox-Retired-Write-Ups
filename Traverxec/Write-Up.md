@@ -36,18 +36,24 @@ This says it is remote code execution, perfect exactly what we need.
 Looking through the usage we need a target IP, target port, and a command to pass it.  The vulnerability is due to directory traversal where we can make a POST request using a few .0%d/ and eventually call a shell.
 we are starting at a specific directory where the web server is sitting and moving up directories until we can then move into /bin where all the binaries are stored.
 If you want to view the contents of the binary folder or any folder just visit http://10.10.10.165/.%0d./.%0d./.%0d./.%0d./ This link shows you the contents of root.
-select the bin folder if you want to see what binaries you can run and home to see what users are on the machine.
+![Root Directory of host](https://github.com/wkbrdr8522/HackTheBox-Retired-Write-Ups/blob/master/Traverxec/Index%20of%20root%20on%20machine.png)
+
+Select the bin folder if you want to see what binaries you can run and home to see what users are on the machine.  
 
 To use the exploit code just save the code from exploit db into a file called cve2019_16278.py.  Then we want to run the command.  From looking at /bin we know what different binaries we can call from visiting here http://10.10.10.165/.%0D./.%0D./.%0D./.%0D./bin/.
 
 The problem is a lot of them have 500 interal server error.  I made a list of all the files and then used foxy proxy and burp to capture the request of visiting http://10.10.10.165/.%0D./.%0D./.%0D./.%0D./bin/apt-cache
 Any binary path would work here.
+![Apt-Cache Example](https://raw.githubusercontent.com/wkbrdr8522/HackTheBox-Retired-Write-Ups/master/Traverxec/apt-cache%20example.png)
+
 Once you open burp, go to the proxy tab and turn intercept on.  Also your foxy proxy needs to be configured to send traffic through burp which is listening in my case on 8080.
 ![Burp Intercepted Request](https://raw.githubusercontent.com/wkbrdr8522/HackTheBox-Retired-Write-Ups/master/Traverxec/Burp%20Intercepted%20Request.jpg)
 
 
 Once we get the request the first line will look like this:  GET /.0%D./.0%D./.0%D./.0%D./bin/apt-cache.  Right click the request and send to Intruder.
+![Burp Set Up Intruder](https://raw.githubusercontent.com/wkbrdr8522/HackTheBox-Retired-Write-Ups/master/Traverxec/Burp%20Set%20up%20Intruder.png)
 In intruder choose Sniper as the Attack Type and highlight apt-cache or whatever is after /bin/ and click Add.  Then under the payloads tab, paste the list you made earlier of all the binaries and click start attack.
+![Burp Snipe Attack Intruder]((https://raw.githubusercontent.com/wkbrdr8522/HackTheBox-Retired-Write-Ups/master/Traverxec/Burp%20Set%20up%20Intruder%202.png)
 This could be slowed down if you are running the free Burp, which I am.
 
 We notice that bash gets a 500 Status, but sh gets a 200, so let's use sh in our exploit.
